@@ -25,7 +25,7 @@
     </nav>
   
       <!-- Calculator -->
-    <div class="container-fluid d-flex justify-content-center align-items-center">
+    <div class="container-fluid d-flex justify-content-center align-items-center pb-5">
 
       <div class="container mt-5 mb-5 w-25 bg-info-subtle p-3 border rounded-5">
         <h2 class="text-center">BMI Calculator</h1>
@@ -83,7 +83,14 @@
             </div>
         </div>
         
-
+        <div id="history" class="mb-2">
+            <h4 class="text-center">BMI History</h4>
+            <ul>
+                <% for (let entry of history) { %>
+                    <li><%= entry.date %> - <%= entry.value %></li>
+                <% } %>
+            </ul>
+        </div>
       
       </div>
   </div>
