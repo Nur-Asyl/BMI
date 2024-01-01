@@ -3,13 +3,14 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const app = express();
 const { format } = require("date-fns");
+const path = require('path');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.set('view engine', 'ejs');
-app.set('views', __dirname + '/views');
+app.set('views', path.join(__dirname, '../views'));
 
-const bmiHistoryFilePath = __dirname + '/bmiHistory.json';
+const bmiHistoryFilePath = path.join(__dirname, '../bmiHistory.json');
 let bmiHistory = [];
 
 try {

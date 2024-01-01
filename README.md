@@ -1,5 +1,5 @@
 # BMI-calculator
-
+BMI calculator for define your heath :)
 ## Installation
 npm install express <br />
 npm install body-parser <br />
@@ -14,6 +14,7 @@ const bodyParser = require('body-parser'); <br />
 const express = require('express'); <br />
 const app = express(); <br />
 const { format } = require("date-fns"); <br />
+const path = require('path'); <br />
 
 ## Routes
 app => { <br />
@@ -21,5 +22,6 @@ app => { <br />
     GET('/') <br />
 } <br />
 
-
+## Formula
+BMI = Weight / (Height * Height) <br />
 
