@@ -1,8 +1,8 @@
 const fs = require('fs');
 const bodyParser = require('body-parser');
 const express = require('express');
-const health_calc = require('@widlestudiollp/health-calculation');
 const app = express();
+const { format } = require("date-fns");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -31,15 +31,25 @@ app.post('/', (req, res) => {
     let gender = req.body.gender;
     let age = req.body.age;
 
-    let bmi = parseFloat(health_calc.bmi(weight, weightType, height, heightType)); 
-
-    if (gender === 'male' && age > 18) {
-        bmi += 0.5;
-    } else if (gender === 'female' && age > 18) {
-        bmi -= 0.5;
+    if (heightType === 'Pounds') {
+        height = height * 0.453592
     }
 
-    const newEntry = { date: new Date(), value: bmi.toFixed(2) };
+    if (weightType === 'Inches') {
+        weight = weight * 0.0254
+    } else if (weightType === 'Feet') {
+        weight = weight * 0.3048
+    }
+
+    let bmi = parseFloat(weight/(height * height)); 
+
+    if (gender === 'male' && age < 20) {
+        bmi -= 0.1;
+    } else if (gender === 'female' && age < 20) {
+        bmi += 0.4;
+    }
+
+    const newEntry = { date: format(new Date(), "yyyy-MM-dd"), value: bmi.toFixed(2) };
     bmiHistory.push(newEntry);
 
     try {
@@ -49,7 +59,19 @@ app.post('/', (req, res) => {
         console.error('Error writing BMI history file:', error.message);
     }
 
-    res.render('index', { "result": bmi.toFixed(2), "history": bmiHistory });
+    if (bmi < 19) {
+        res.render('index', { "result": bmi.toFixed(2) + " Underweight", "history": bmiHistory });
+
+    } else if (19 <= bmi && bmi < 25) {
+        res.render('index', { "result": bmi.toFixed(2) + " Normalweight", "history": bmiHistory });
+
+    } else if (25 <= bmi && bmi < 30) {
+        res.render('index', { "result": bmi.toFixed(2) + " Overweight", "history": bmiHistory });
+
+    } else {
+        res.render('index', { "result": bmi.toFixed(2) + " Obese", "history": bmiHistory });
+
+    }
 });
 
 app.listen(3000, () => {
